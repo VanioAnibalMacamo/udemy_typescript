@@ -15,7 +15,7 @@ let usuarios = [];
 class UsersController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const snapshot = yield (0, firestore_1.getFirestore)().collection('users').get();
+            const snapshot = yield (0, firestore_1.getFirestore)().collection("users").get();
             const users = snapshot.docs.map((doc) => {
                 return Object.assign({ id: doc.id }, doc.data());
             });
@@ -23,19 +23,16 @@ class UsersController {
         });
     }
     static getById(req, res) {
-        const { id } = req.params;
-        const usuario = usuarios.find((user) => user.id === Number(id));
-        if (usuario) {
-            res.send(usuario);
-        }
-        else {
-            res.status(404).send("Usuário não encontrado");
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            let userId = req.params.id;
+            const doc = yield (0, firestore_1.getFirestore)().collection("users").doc(userId).get();
+            res.send(Object.assign({ id: doc.id }, doc.data()));
+        });
     }
     static save(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let user = req.body;
-            const userSalvo = yield (0, firestore_1.getFirestore)().collection('users').add(user);
+            const userSalvo = yield (0, firestore_1.getFirestore)().collection("users").add(user);
             res.send({
                 message: `User created ${userSalvo.id} successfully`,
             });
