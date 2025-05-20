@@ -7,7 +7,7 @@ type User = {
   name: string;
   email: string;
 };
-let usuarios: User[] = [];
+
 
 export class UsersController {
   static async getAll(req: Request, res: Response) {
@@ -59,19 +59,12 @@ export class UsersController {
   }
 
   static delete(req: Request, res: Response) {
-    let id = Number(req.params.id);
-    let usuario = usuarios.find((usuario) => usuario.id === id);
+    let userId = req.params.id;
 
-    if (usuario) {
-      usuarios = usuarios.filter((usuario) => usuario.id !== id);
+    getFirestore().collection("users").doc(userId).delete();
 
-      res.send({
-        message: "Usuario Removido",
-      });
-    } else {
-      res.send({
-        message: "User deleted successfully",
-      });
-    }
+    res.send({
+      message: "User deleted successfully",
+    });
   }
 }

@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const firestore_1 = require("firebase-admin/firestore");
-let usuarios = [];
 class UsersController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,19 +49,11 @@ class UsersController {
         });
     }
     static delete(req, res) {
-        let id = Number(req.params.id);
-        let usuario = usuarios.find((usuario) => usuario.id === id);
-        if (usuario) {
-            usuarios = usuarios.filter((usuario) => usuario.id !== id);
-            res.send({
-                message: "Usuario Removido",
-            });
-        }
-        else {
-            res.send({
-                message: "User deleted successfully",
-            });
-        }
+        let userId = req.params.id;
+        (0, firestore_1.getFirestore)().collection("users").doc(userId).delete();
+        res.send({
+            message: "User deleted successfully",
+        });
     }
 }
 exports.UsersController = UsersController;
