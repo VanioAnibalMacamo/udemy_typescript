@@ -1,4 +1,4 @@
-/node_modules
-/lib
-firebase-adminsdk.json
-.env
+ecommerce-api/node_modules
+ecommerce-api/lib
+ecommerce-api/firebase-adminsdk.json
+ecommerce-api/.env
