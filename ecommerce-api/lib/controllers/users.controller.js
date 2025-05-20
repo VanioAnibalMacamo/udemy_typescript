@@ -39,13 +39,14 @@ class UsersController {
         });
     }
     static update(req, res) {
-        let id = Number(req.params.id);
-        let { name, email } = req.body;
-        let indexOf = usuarios.findIndex((_user) => _user.id === id);
-        usuarios[indexOf].name = name;
-        usuarios[indexOf].email = email;
+        let userId = req.params.id;
+        let user = req.body;
+        (0, firestore_1.getFirestore)().collection("users").doc(userId).set({
+            name: user.name,
+            email: user.email
+        });
         res.send({
-            message: "Usuario atualizado com sucesso!",
+            message: "User updated successfully",
         });
     }
     static delete(req, res) {

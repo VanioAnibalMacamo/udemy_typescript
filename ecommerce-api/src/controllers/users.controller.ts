@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import  { Request, Response } from "express";
 import { getFirestore } from "firebase-admin/firestore";
+
 
 type User = {
   id: number;
@@ -44,16 +45,16 @@ export class UsersController {
   }
 
   static update(req: Request, res: Response) {
-    let id = Number(req.params.id);
-    let { name, email } = req.body;
+    let userId = req.params.id;
+    let user = req.body as User;
 
-    let indexOf = usuarios.findIndex((_user: User) => _user.id === id);
-
-    usuarios[indexOf].name = name;
-    usuarios[indexOf].email = email;
+    getFirestore().collection("users").doc(userId).set({
+      name: user.name,
+      email: user.email
+    });
 
     res.send({
-      message: "Usuario atualizado com sucesso!",
+      message: "User updated successfully",
     });
   }
 
