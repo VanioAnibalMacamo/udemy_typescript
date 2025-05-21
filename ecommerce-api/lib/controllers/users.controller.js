@@ -14,11 +14,19 @@ const firestore_1 = require("firebase-admin/firestore");
 class UsersController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const snapshot = yield (0, firestore_1.getFirestore)().collection("users").get();
-            const users = snapshot.docs.map((doc) => {
-                return Object.assign({ id: doc.id }, doc.data());
-            });
-            res.send(users);
+            try {
+                const snapshot = yield (0, firestore_1.getFirestore)().collection("users").get();
+                throw new Error("Erro ao buscar converter documentos");
+                const users = snapshot.docs.map((doc) => {
+                    return Object.assign({ id: doc.id }, doc.data());
+                });
+                res.send(users);
+            }
+            catch (error) {
+                res.status(500).send({
+                    message: "Erro inerno do servidor",
+                });
+            }
         });
     }
     static getById(req, res) {
@@ -32,7 +40,7 @@ class UsersController {
         return __awaiter(this, void 0, void 0, function* () {
             let user = req.body;
             const userSalvo = yield (0, firestore_1.getFirestore)().collection("users").add(user);
-            res.send({
+            res.status(201).send({
                 message: `User created ${userSalvo.id} successfully`,
             });
         });
@@ -42,7 +50,7 @@ class UsersController {
         let user = req.body;
         (0, firestore_1.getFirestore)().collection("users").doc(userId).set({
             name: user.name,
-            email: user.email
+            email: user.email,
         });
         res.send({
             message: "User updated successfully",
@@ -51,9 +59,7 @@ class UsersController {
     static delete(req, res) {
         let userId = req.params.id;
         (0, firestore_1.getFirestore)().collection("users").doc(userId).delete();
-        res.send({
-            message: "User deleted successfully",
-        });
+        res.status(204).end();
     }
 }
 exports.UsersController = UsersController;

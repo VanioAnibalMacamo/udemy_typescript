@@ -1,6 +1,5 @@
-import  { Request, Response } from "express";
+import { Request, Response } from "express";
 import { getFirestore } from "firebase-admin/firestore";
-
 
 type User = {
   id: number;
@@ -8,19 +7,25 @@ type User = {
   email: string;
 };
 
-
 export class UsersController {
   static async getAll(req: Request, res: Response) {
-    const snapshot = await getFirestore().collection("users").get();
+    try {
+      const snapshot = await getFirestore().collection("users").get();
 
-    const users = snapshot.docs.map((doc) => {
-      return {
-        id: doc.id,
-        ...doc.data(),
-      };
-    });
+      throw new Error("Erro ao buscar converter documentos");
+      const users = snapshot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      });
 
-    res.send(users);
+      res.send(users);
+    } catch (error) {
+      res.status(500).send({
+        message: "Erro inerno do servidor",
+      });
+    }
   }
 
   static async getById(req: Request, res: Response) {
@@ -39,7 +44,7 @@ export class UsersController {
 
     const userSalvo = await getFirestore().collection("users").add(user);
 
-    res.send({
+    res.status(201).send({
       message: `User created ${userSalvo.id} successfully`,
     });
   }
@@ -50,7 +55,7 @@ export class UsersController {
 
     getFirestore().collection("users").doc(userId).set({
       name: user.name,
-      email: user.email
+      email: user.email,
     });
 
     res.send({
@@ -63,8 +68,6 @@ export class UsersController {
 
     getFirestore().collection("users").doc(userId).delete();
 
-    res.send({
-      message: "User deleted successfully",
-    });
+    res.status(204).end();
   }
 }
