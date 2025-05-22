@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const firestore_1 = require("firebase-admin/firestore");
+const validation_error_1 = require("../errors/validation.error");
+const not_found_error_1 = require("../errors/not-found.error");
 class UsersController {
     static getAll(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,7 +33,12 @@ class UsersController {
             try {
                 let userId = req.params.id;
                 const doc = yield (0, firestore_1.getFirestore)().collection("users").doc(userId).get();
-                res.send(Object.assign({ id: doc.id }, doc.data()));
+                if (doc.exists) {
+                    res.send(Object.assign({ id: doc.id }, doc.data()));
+                }
+                else {
+                    throw new not_found_error_1.NotFoundError("Usuario não encontrado!").send(res);
+                }
             }
             catch (error) {
                 next(error);
@@ -40,8 +47,12 @@ class UsersController {
     }
     static save(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 let user = req.body;
+                if (!user.email || ((_a = user.email) === null || _a === void 0 ? void 0 : _a.length) === 0) {
+                    throw new validation_error_1.ValidationError("Email is required");
+                }
                 const userSalvo = yield (0, firestore_1.getFirestore)().collection("users").add(user);
                 res.status(201).send({
                     message: `User created ${userSalvo.id} successfully`,
@@ -53,20 +64,28 @@ class UsersController {
         });
     }
     static update(req, res, next) {
-        try {
-            let userId = req.params.id;
-            let user = req.body;
-            (0, firestore_1.getFirestore)().collection("users").doc(userId).set({
-                name: user.name,
-                email: user.email,
-            });
-            res.send({
-                message: "User updated successfully",
-            });
-        }
-        catch (error) {
-            next(error);
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let userId = req.params.id;
+                let user = req.body;
+                let docRef = (0, firestore_1.getFirestore)().collection("users").doc(userId);
+                if ((yield docRef.get()).exists) {
+                    yield docRef.set({
+                        name: user.name,
+                        email: user.email,
+                    });
+                    res.send({
+                        message: "User updated successfully",
+                    });
+                }
+                else {
+                    throw new not_found_error_1.NotFoundError("Usuario não existe!").send(res);
+                }
+            }
+            catch (error) {
+                next(error);
+            }
+        });
     }
     static delete(req, res, next) {
         try {
