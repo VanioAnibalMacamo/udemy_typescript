@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const firestore_1 = require("firebase-admin/firestore");
-const validation_error_1 = require("../errors/validation.error");
 const not_found_error_1 = require("../errors/not-found.error");
 class UsersController {
     static getAll(req, res, next) {
@@ -37,11 +36,7 @@ class UsersController {
     }
     static save(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
             let user = req.body;
-            if (!user.email || ((_a = user.email) === null || _a === void 0 ? void 0 : _a.length) === 0) {
-                throw new validation_error_1.ValidationError("Email is required");
-            }
             const userSalvo = yield (0, firestore_1.getFirestore)().collection("users").add(user);
             res.status(201).send({
                 message: `User created ${userSalvo.id} successfully`,

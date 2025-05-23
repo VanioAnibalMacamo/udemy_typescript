@@ -4,7 +4,9 @@ exports.errorHandler = void 0;
 const validation_error_1 = require("../errors/validation.error");
 const internal_server_error_1 = require("../errors/internal-server.error");
 const not_found_error_1 = require("../errors/not-found.error");
+const celebrate_1 = require("celebrate");
 const errorHandler = (app) => {
+    app.use((0, celebrate_1.errors)());
     app.use((error, req, res, next) => {
         if (error instanceof validation_error_1.ValidationError) {
             error.send(res);
