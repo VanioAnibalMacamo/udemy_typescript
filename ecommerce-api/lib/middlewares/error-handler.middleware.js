@@ -1,17 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
-const validation_error_1 = require("../errors/validation.error");
 const internal_server_error_1 = require("../errors/internal-server.error");
-const not_found_error_1 = require("../errors/not-found.error");
 const celebrate_1 = require("celebrate");
+const base_error_1 = require("../errors/base.error");
 const errorHandler = (app) => {
     app.use((0, celebrate_1.errors)());
     app.use((error, req, res, next) => {
-        if (error instanceof validation_error_1.ValidationError) {
-            error.send(res);
-        }
-        else if (error instanceof not_found_error_1.NotFoundError) {
+        console.log(error);
+        if (error instanceof base_error_1.ErrorBase) {
             error.send(res);
         }
         else {

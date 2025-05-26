@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const not_found_error_1 = require("../errors/not-found.error");
 const user_repository_1 = require("../repositories/user.repository");
+const auth_service_1 = require("./auth.service");
 class UserService {
     constructor() {
         this.userRepository = new user_repository_1.UserRepository();
+        this.authService = new auth_service_1.AuthService();
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +34,9 @@ class UserService {
     }
     save(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.userRepository.save(user);
+            const userAuth = yield this.authService.create(user);
+            user.id = userAuth.uid;
+            yield this.userRepository.update(user);
         });
     }
     update(userId, user) {
