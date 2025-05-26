@@ -1,72 +1,61 @@
 import { NextFunction, Request, Response } from "express";
-import { getFirestore } from "firebase-admin/firestore";
-import { NotFoundError } from "../errors/not-found.error";
 import { User } from "../models/user.model";
+import { UserService } from "../services/user.service";
 
 export class UsersController {
   static async getAll(req: Request, res: Response, next: NextFunction) {
-    const snapshot = await getFirestore().collection("users").get();
-
-    const users = snapshot.docs.map((doc) => {
-      return {
-        id: doc.id,
-        ...doc.data(),
-      };
-    });
-
-    res.send(users);
+    res.send(await new UserService().getAll());
   }
 
   static async getById(req: Request, res: Response, next: NextFunction) {
     let userId = req.params.id;
 
-    const doc = await getFirestore().collection("users").doc(userId).get();
-
-    if (doc.exists) {
-      res.send({
-        id: doc.id,
-        ...doc.data(),
-      });
-    } else {
-      throw new NotFoundError("Usuario não encontrado!").send(res);
-    }
+    res.send(await new UserService().getById(userId));
   }
 
   static async save(req: Request, res: Response, next: NextFunction) {
-    let user = req.body;
+    try {
+      const userService = new UserService();
+      const user = req.body;
 
-  
-    const userSalvo = await getFirestore().collection("users").add(user);
+      const userSalvo = await userService.create(user);
 
-    res.status(201).send({
-      message: `User created ${userSalvo.id} successfully`,
-    });
-  }
-
-  static async update(req: Request, res: Response, next: NextFunction) {
-    let userId = req.params.id;
-    let user = req.body as User;
-
-    let docRef = getFirestore().collection("users").doc(userId);
-
-    if ((await docRef.get()).exists) {
-      await docRef.set({
-        name: user.name,
-        email: user.email,
+      res.status(201).send({
+        message: `User created ${userSalvo.id} successfully`,
+        user: userSalvo,
       });
-      res.send({
-        message: "User updated successfully",
-      });
-    } else {
-      throw new NotFoundError("Usuario não existe!").send(res);
+    } catch (error) {
+      next(error);
     }
   }
 
-  static delete(req: Request, res: Response, next: NextFunction) {
-    let userId = req.params.id;
+  static async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      const user = req.body as User;
 
-    getFirestore().collection("users").doc(userId).delete();
+      const userService = new UserService();
+      const userAtualizado = await userService.update(userId, user);
 
-    res.status(204).end();
+      res.send({
+        message: `User ${userAtualizado.id} updated successfully`,
+        user: userAtualizado,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+
+      const userService = new UserService();
+      await userService.delete(userId);
+
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
   }
 }

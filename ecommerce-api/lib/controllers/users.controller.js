@@ -10,62 +10,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
-const firestore_1 = require("firebase-admin/firestore");
-const not_found_error_1 = require("../errors/not-found.error");
+const user_service_1 = require("../services/user.service");
 class UsersController {
     static getAll(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const snapshot = yield (0, firestore_1.getFirestore)().collection("users").get();
-            const users = snapshot.docs.map((doc) => {
-                return Object.assign({ id: doc.id }, doc.data());
-            });
-            res.send(users);
+            res.send(yield new user_service_1.UserService().getAll());
         });
     }
     static getById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             let userId = req.params.id;
-            const doc = yield (0, firestore_1.getFirestore)().collection("users").doc(userId).get();
-            if (doc.exists) {
-                res.send(Object.assign({ id: doc.id }, doc.data()));
-            }
-            else {
-                throw new not_found_error_1.NotFoundError("Usuario não encontrado!").send(res);
-            }
+            res.send(yield new user_service_1.UserService().getById(userId));
         });
     }
     static save(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            let user = req.body;
-            const userSalvo = yield (0, firestore_1.getFirestore)().collection("users").add(user);
-            res.status(201).send({
-                message: `User created ${userSalvo.id} successfully`,
-            });
+            try {
+                const userService = new user_service_1.UserService();
+                const user = req.body;
+                const userSalvo = yield userService.create(user);
+                res.status(201).send({
+                    message: `User created ${userSalvo.id} successfully`,
+                    user: userSalvo,
+                });
+            }
+            catch (error) {
+                next(error);
+            }
         });
     }
     static update(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            let userId = req.params.id;
-            let user = req.body;
-            let docRef = (0, firestore_1.getFirestore)().collection("users").doc(userId);
-            if ((yield docRef.get()).exists) {
-                yield docRef.set({
-                    name: user.name,
-                    email: user.email,
-                });
+            try {
+                const userId = req.params.id;
+                const user = req.body;
+                const userService = new user_service_1.UserService();
+                const userAtualizado = yield userService.update(userId, user);
                 res.send({
-                    message: "User updated successfully",
+                    message: `User ${userAtualizado.id} updated successfully`,
+                    user: userAtualizado,
                 });
             }
-            else {
-                throw new not_found_error_1.NotFoundError("Usuario não existe!").send(res);
+            catch (error) {
+                next(error);
             }
         });
     }
     static delete(req, res, next) {
-        let userId = req.params.id;
-        (0, firestore_1.getFirestore)().collection("users").doc(userId).delete();
-        res.status(204).end();
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.params.id;
+                const userService = new user_service_1.UserService();
+                yield userService.delete(userId);
+                res.status(204).end();
+            }
+            catch (error) {
+                next(error);
+            }
+        });
     }
 }
 exports.UsersController = UsersController;
