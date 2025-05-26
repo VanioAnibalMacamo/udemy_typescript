@@ -36,7 +36,8 @@ class UserRepository {
     }
     save(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.collection.add(user);
+            delete user.password;
+            yield this.collection.doc(user.id).set(user);
         });
     }
     update(user) {
