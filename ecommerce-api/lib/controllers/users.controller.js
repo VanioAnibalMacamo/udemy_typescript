@@ -28,9 +28,9 @@ class UsersController {
             try {
                 const userService = new user_service_1.UserService();
                 const user = req.body;
-                const userSalvo = yield userService.create(user);
+                const userSalvo = yield userService.save(user);
                 res.status(201).send({
-                    message: `User created ${userSalvo.id} successfully`,
+                    message: `User created successfully`,
                     user: userSalvo,
                 });
             }
@@ -47,7 +47,7 @@ class UsersController {
                 const userService = new user_service_1.UserService();
                 const userAtualizado = yield userService.update(userId, user);
                 res.send({
-                    message: `User ${userAtualizado.id} updated successfully`,
+                    message: `User updated successfully`,
                     user: userAtualizado,
                 });
             }

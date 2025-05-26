@@ -9,48 +9,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
-const not_found_error_1 = require("../errors/not-found.error");
-const user_repository_1 = require("../repositories/user.repository");
-class UserService {
+exports.UserRepository = void 0;
+const firestore_1 = require("firebase-admin/firestore");
+class UserRepository {
     constructor() {
-        this.userRepository = new user_repository_1.UserRepository();
+        this.collection = (0, firestore_1.getFirestore)().collection("users");
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.getAll();
+            const snapshot = yield this.collection.get();
+            return snapshot.docs.map((doc) => {
+                return Object.assign({ id: doc.id }, doc.data());
+            });
         });
     }
     getById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.getById(userId);
-            if (!user) {
-                throw new not_found_error_1.NotFoundError("User not found");
+            const doc = yield this.collection.doc(userId).get();
+            if (doc.exists) {
+                return Object.assign({ id: doc.id }, doc.data());
             }
-            return user;
+            else {
+                return null;
+            }
         });
     }
     save(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.userRepository.save(user);
+            yield this.collection.add(user);
         });
     }
-    update(userId, user) {
+    update(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _user = yield this.userRepository.getById(userId);
-            if (!_user) {
-                throw new not_found_error_1.NotFoundError("User not found");
-            }
-            _user.name = user.name;
-            _user.email = user.email;
-            this.userRepository.update(_user);
+            let docRef = this.collection.doc(user.id);
+            yield docRef.set({
+                name: user.name,
+                email: user.email,
+            });
         });
     }
     delete(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.userRepository.delete(userId);
+            yield this.collection.doc(userId).delete();
         });
     }
 }
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+exports.UserRepository = UserRepository;
+//# sourceMappingURL=user.repository.js.map

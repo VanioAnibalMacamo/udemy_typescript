@@ -18,10 +18,10 @@ export class UsersController {
       const userService = new UserService();
       const user = req.body;
 
-      const userSalvo = await userService.create(user);
+      const userSalvo = await userService.save(user);
 
       res.status(201).send({
-        message: `User created ${userSalvo.id} successfully`,
+        message: `User created successfully`,
         user: userSalvo,
       });
     } catch (error) {
@@ -38,7 +38,7 @@ export class UsersController {
       const userAtualizado = await userService.update(userId, user);
 
       res.send({
-        message: `User ${userAtualizado.id} updated successfully`,
+        message: `User updated successfully`,
         user: userAtualizado,
       });
     } catch (error) {
