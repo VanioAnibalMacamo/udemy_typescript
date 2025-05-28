@@ -12,17 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = void 0;
 const unauthorized_error_1 = require("../errors/unauthorized.error");
 const auth_1 = require("firebase-admin/auth");
+const user_service_1 = require("../services/user.service");
+const forbidden_error_1 = require("../errors/forbidden.error");
 const auth = (app) => {
     app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        if (req.method === "POST" && req.url.endsWith("/auth/login")) {
+        if (req.method === "POST" && req.url.startsWith("/auth/login")) {
             return next();
         }
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split("Bearer ")[1];
         if (token) {
             try {
                 const decodedIdToken = yield (0, auth_1.getAuth)().verifyIdToken(token, true);
-                console.log(decodedIdToken);
+                const user = yield new user_service_1.UserService().getById(decodedIdToken.uid);
+                if (!user) {
+                    return next(new forbidden_error_1.ForbiddenError());
+                }
+                req.user = user;
                 return next();
             }
             catch (error) {

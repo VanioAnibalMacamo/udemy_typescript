@@ -14,6 +14,7 @@ const user_service_1 = require("../services/user.service");
 class UsersController {
     static getAll(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(`getAll - userId = ${req.user.id}`);
             res.send(yield new user_service_1.UserService().getAll());
         });
     }
