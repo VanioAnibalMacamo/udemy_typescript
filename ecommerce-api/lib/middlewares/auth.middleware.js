@@ -15,6 +15,9 @@ const auth_1 = require("firebase-admin/auth");
 const auth = (app) => {
     app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
+        if (req.method === "POST" && req.url.endsWith("/auth/login")) {
+            return next();
+        }
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split("Bearer ")[1];
         if (token) {
             try {
