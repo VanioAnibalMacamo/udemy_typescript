@@ -9,11 +9,13 @@ const app_2 = require("firebase/app");
 const index_1 = require("./routes/index");
 const error_handler_middleware_1 = require("./middlewares/error-handler.middleware");
 const page_not_found_middleware_1 = require("./middlewares/page-not-found.middleware");
+const auth_middleware_1 = require("./middlewares/auth.middleware");
 (0, app_1.initializeApp)();
 (0, app_2.initializeApp)({
     apiKey: process.env.FIRE_API_KEY,
 });
 const app = (0, express_1.default)();
+(0, auth_middleware_1.auth)(app);
 (0, index_1.routes)(app);
 (0, page_not_found_middleware_1.pageNotFoundHandler)(app); // Middleware de tratamento de página não encontrada
 (0, error_handler_middleware_1.errorHandler)(app); // Middleware de tratamento de erro
