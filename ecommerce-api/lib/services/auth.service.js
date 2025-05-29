@@ -55,6 +55,11 @@ class AuthService {
             });
         });
     }
+    delete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, auth_1.getAuth)().deleteUser(id);
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

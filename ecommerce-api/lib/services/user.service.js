@@ -53,6 +53,7 @@ class UserService {
     }
     delete(userId) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.authService.delete(userId);
             yield this.userRepository.delete(userId);
         });
     }
