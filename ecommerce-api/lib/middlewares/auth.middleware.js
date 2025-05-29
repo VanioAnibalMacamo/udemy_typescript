@@ -17,7 +17,7 @@ const forbidden_error_1 = require("../errors/forbidden.error");
 const auth = (app) => {
     app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        if (req.method === "POST" && req.url.startsWith("/auth/login")) {
+        if (req.method === "POST" && req.url.startsWith("/auth/login") || req.url.startsWith("/auth/recovery")) {
             return next();
         }
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split("Bearer ")[1];
