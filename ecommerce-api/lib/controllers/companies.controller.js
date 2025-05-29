@@ -9,30 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
-const user_service_1 = require("../services/user.service");
-class UsersController {
+exports.CompaniesController = void 0;
+const company_service_copy_1 = require("../services/company.service copy");
+class CompaniesController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`getAll - userId = ${req.user.id}`);
-            res.send(yield new user_service_1.UserService().getAll());
+            res.send(yield new company_service_copy_1.CompanyService().getAll());
         });
     }
     static getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            let userId = req.params.id;
-            res.send(yield new user_service_1.UserService().getById(userId));
+            let companyId = req.params.id;
+            res.send(yield new company_service_copy_1.CompanyService().getById(companyId));
         });
     }
     static save(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userService = new user_service_1.UserService();
-                const user = req.body;
-                const userSalvo = yield userService.save(user);
+                const companyService = new company_service_copy_1.CompanyService();
+                const company = req.body;
+                const companySalvo = yield companyService.save(company);
                 res.status(201).send({
-                    message: `User created successfully`,
-                    user: userSalvo,
+                    message: `Company created successfully`,
+                    company: companySalvo,
                 });
             }
             catch (error) {
@@ -42,31 +41,19 @@ class UsersController {
     static update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = req.params.id;
-                const user = req.body;
-                const userService = new user_service_1.UserService();
-                const userAtualizado = yield userService.update(userId, user);
+                const companyId = req.params.id;
+                const company = req.body;
+                const companyService = new company_service_copy_1.CompanyService();
+                const companyAtualizado = yield companyService.update(companyId, company);
                 res.send({
-                    message: `User updated successfully`,
-                    user: userAtualizado,
+                    message: `Company updated successfully`,
+                    company: companyAtualizado,
                 });
             }
             catch (error) {
             }
         });
     }
-    static delete(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const userId = req.params.id;
-                const userService = new user_service_1.UserService();
-                yield userService.delete(userId);
-                res.status(204).end();
-            }
-            catch (error) {
-            }
-        });
-    }
 }
-exports.UsersController = UsersController;
-//# sourceMappingURL=users.controller.js.map
+exports.CompaniesController = CompaniesController;
+//# sourceMappingURL=companies.controller.js.map

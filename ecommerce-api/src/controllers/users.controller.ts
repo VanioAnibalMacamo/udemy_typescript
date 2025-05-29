@@ -1,20 +1,20 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
 
 export class UsersController {
-  static async getAll(req: Request, res: Response, next: NextFunction) {
+  static async getAll(req: Request, res: Response) {
     console.log(`getAll - userId = ${req.user.id}`);
     res.send(await new UserService().getAll());
   }
 
-  static async getById(req: Request, res: Response, next: NextFunction) {
+  static async getById(req: Request, res: Response) {
     let userId = req.params.id;
 
     res.send(await new UserService().getById(userId));
   }
 
-  static async save(req: Request, res: Response, next: NextFunction) {
+  static async save(req: Request, res: Response) {
     try {
       const userService = new UserService();
       const user = req.body;
@@ -26,11 +26,11 @@ export class UsersController {
         user: userSalvo,
       });
     } catch (error) {
-      next(error);
+    
     }
   }
 
-  static async update(req: Request, res: Response, next: NextFunction) {
+  static async update(req: Request, res: Response) {
     try {
       const userId = req.params.id;
       const user = req.body as User;
@@ -43,11 +43,11 @@ export class UsersController {
         user: userAtualizado,
       });
     } catch (error) {
-      next(error);
+     
     }
   }
 
-  static async delete(req: Request, res: Response, next: NextFunction) {
+  static async delete(req: Request, res: Response) {
     try {
       const userId = req.params.id;
 
@@ -56,7 +56,7 @@ export class UsersController {
 
       res.status(204).end();
     } catch (error) {
-      next(error);
+     
     }
   }
 }
