@@ -30,6 +30,18 @@ class AuthService {
             });
         });
     }
+    update(id, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const props = {
+                displayName: user.name,
+                email: user.email,
+            };
+            if (user.password) {
+                props.password = user.password;
+            }
+            (0, auth_1.getAuth)().updateUser(id, props);
+        });
+    }
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield (0, auth_2.signInWithEmailAndPassword)((0, auth_2.getAuth)(), email, password)

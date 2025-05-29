@@ -47,7 +47,8 @@ class UserService {
             }
             _user.name = user.name;
             _user.email = user.email;
-            this.userRepository.update(_user);
+            yield this.authService.update(userId, user);
+            yield this.userRepository.update(_user);
         });
     }
     delete(userId) {

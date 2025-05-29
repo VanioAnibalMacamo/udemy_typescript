@@ -1,7 +1,7 @@
 import { UnauthorizedError } from "../errors/unauthorized.error";
 import { EmailAlreadyExistsError } from "../errors/email-already-exists.error";
 import { User } from "../models/user.model";
-import { FirebaseAuthError, getAuth, UserRecord } from "firebase-admin/auth";
+import { FirebaseAuthError, getAuth, UpdateRequest, UserRecord } from "firebase-admin/auth";
 import { getAuth as getFireBaseAuth, signInWithEmailAndPassword, UserCredential} from "firebase/auth"
 import { FirebaseError } from "firebase/app";
 export class AuthService {
@@ -17,6 +17,19 @@ export class AuthService {
             }
             throw error;
         });
+    }
+
+   async update(id: string, user: User){
+      const props: UpdateRequest = {
+        displayName: user.name,
+        email: user.email,
+      };
+
+      if(user.password){
+        props.password = user.password;
+      }
+
+      getAuth().updateUser(id, props);
     }
 
     async login(email: string, password: string): Promise<UserCredential> {
