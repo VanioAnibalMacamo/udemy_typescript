@@ -7,7 +7,9 @@ exports.companySchema = celebrate_1.Joi.object().keys({
     cpfCnpj: celebrate_1.Joi.alternatives().try(celebrate_1.Joi.string().length(11).required(), celebrate_1.Joi.string().length(14).required()),
     razaoSocial: celebrate_1.Joi.string().required(),
     nomeFantasia: celebrate_1.Joi.string().required(),
-    telefone: celebrate_1.Joi.string().required(),
+    telefone: celebrate_1.Joi.string()
+        .regex(/^(?:\+258|00258)?(82|83|84|85|86|87|88)\d{7}$/)
+        .required(),
     horarioFuncionamento: celebrate_1.Joi.string().required(),
     endereco: celebrate_1.Joi.string().required(),
     localizacao: celebrate_1.Joi.string().required(),
