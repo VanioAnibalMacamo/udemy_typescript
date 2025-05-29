@@ -36,6 +36,10 @@ class CompanyRepository {
     }
     save(company) {
         return __awaiter(this, void 0, void 0, function* () {
+            const docRef = company.id
+                ? this.collection.doc(company.id)
+                : this.collection.doc();
+            company.id = docRef.id;
             yield this.collection.doc(company.id).set(company);
         });
     }

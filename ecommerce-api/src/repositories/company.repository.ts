@@ -1,8 +1,7 @@
 import { CollectionReference, getFirestore } from "firebase-admin/firestore";
 import { Company } from "../models/company.model";
 
-
-export class CompanyRepository  {
+export class CompanyRepository {
   private collection: CollectionReference;
 
   constructor() {
@@ -34,7 +33,13 @@ export class CompanyRepository  {
   }
 
   async save(company: Company) {
-    await this.collection.doc(company.id!).set(company);
+    const docRef = company.id
+      ? this.collection.doc(company.id)
+      : this.collection.doc(); 
+
+    company.id = docRef.id;
+
+    await this.collection.doc(company.id).set(company);
   }
 
   async update(company: Company) {

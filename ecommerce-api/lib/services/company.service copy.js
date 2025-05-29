@@ -32,7 +32,7 @@ class CompanyService {
     }
     save(company) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.companyRepository.update(company);
+            yield this.companyRepository.save(company);
         });
     }
     update(companyId, company) {
