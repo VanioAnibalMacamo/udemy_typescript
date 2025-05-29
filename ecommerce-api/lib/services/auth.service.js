@@ -60,6 +60,11 @@ class AuthService {
             yield (0, auth_1.getAuth)().deleteUser(id);
         });
     }
+    recovery(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, auth_2.sendPasswordResetEmail)((0, auth_2.getAuth)(), email);
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

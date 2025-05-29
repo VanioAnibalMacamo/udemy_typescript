@@ -2,7 +2,7 @@ import { UnauthorizedError } from "../errors/unauthorized.error";
 import { EmailAlreadyExistsError } from "../errors/email-already-exists.error";
 import { User } from "../models/user.model";
 import { FirebaseAuthError, getAuth, UpdateRequest, UserRecord } from "firebase-admin/auth";
-import { getAuth as getFireBaseAuth, signInWithEmailAndPassword, UserCredential} from "firebase/auth"
+import { getAuth as getFireBaseAuth, sendPasswordResetEmail, signInWithEmailAndPassword, UserCredential} from "firebase/auth"
 import { FirebaseError } from "firebase/app";
 export class AuthService {
 
@@ -46,5 +46,9 @@ export class AuthService {
 
     async delete(id: string) {
       await getAuth().deleteUser(id);
+    }
+
+   async recovery(email: string) {
+     await sendPasswordResetEmail(getFireBaseAuth(), email);
     }
 }

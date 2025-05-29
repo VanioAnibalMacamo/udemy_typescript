@@ -22,6 +22,13 @@ class AuthController {
             });
         });
     }
+    static recovery(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { email } = req.body;
+            yield new auth_service_1.AuthService().recovery(email);
+            res.end();
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map
