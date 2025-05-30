@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateCompanySchema = exports.newCompanySchema = void 0;
 const celebrate_1 = require("celebrate");
 exports.newCompanySchema = celebrate_1.Joi.object().keys({
-    logomarca: celebrate_1.Joi.string().allow(null),
+    logomarca: celebrate_1.Joi.string().base64().required(),
     cpfCnpj: celebrate_1.Joi.alternatives().try(celebrate_1.Joi.string().length(11).required(), celebrate_1.Joi.string().length(14).required()),
     razaoSocial: celebrate_1.Joi.string().required(),
     nomeFantasia: celebrate_1.Joi.string().required(),

@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const not_found_error_1 = require("../errors/not-found.error");
 const company_repository_1 = require("../repositories/company.repository");
+const upload_service_1 = require("./upload.service");
 class CompanyService {
     constructor() {
         this.companyRepository = new company_repository_1.CompanyRepository();
+        this.uploadFileService = new upload_service_1.UploadFileService( /*"images/comapanies/"*/);
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +34,8 @@ class CompanyService {
     }
     save(company) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.companyRepository.save(company);
+            yield this.uploadFileService.upload(company.logomarca);
+            // await this.companyRepository.save(company);
         });
     }
     update(companyId, company) {
