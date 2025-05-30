@@ -10,7 +10,7 @@ export class CompanyService {
 
   constructor() {
     this.companyRepository = new CompanyRepository();
-    this.uploadFileService = new UploadFileService(/*"images/comapanies/"*/);
+    this.uploadFileService = new UploadFileService("images/comapanies/");
   }
 
   async getAll(): Promise<Company[]> {
@@ -27,10 +27,16 @@ export class CompanyService {
   }
 
   async save(company: Company) {
-
-    await  this.uploadFileService.upload(company.logomarca);
-   // await this.companyRepository.save(company);
+    const logomarcaUrl = await this.uploadFileService.upload(company.logomarca);
+    console.log("URL da imagem:", logomarcaUrl);
+  
+    company.logomarca = logomarcaUrl;
+  
+    console.log("Salvando no repositório...");
+    await this.companyRepository.save(company);
+    console.log("Salvo com sucesso!");
   }
+  
 
   async update(companyId: string, company: Company) {
     const _company = await this.companyRepository.getById(companyId);

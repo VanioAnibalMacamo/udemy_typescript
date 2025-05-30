@@ -16,7 +16,7 @@ const upload_service_1 = require("./upload.service");
 class CompanyService {
     constructor() {
         this.companyRepository = new company_repository_1.CompanyRepository();
-        this.uploadFileService = new upload_service_1.UploadFileService( /*"images/comapanies/"*/);
+        this.uploadFileService = new upload_service_1.UploadFileService("images/comapanies/");
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,8 +34,12 @@ class CompanyService {
     }
     save(company) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.uploadFileService.upload(company.logomarca);
-            // await this.companyRepository.save(company);
+            const logomarcaUrl = yield this.uploadFileService.upload(company.logomarca);
+            console.log("URL da imagem:", logomarcaUrl);
+            company.logomarca = logomarcaUrl;
+            console.log("Salvando no repositório...");
+            yield this.companyRepository.save(company);
+            console.log("Salvo com sucesso!");
         });
     }
     update(companyId, company) {
