@@ -1,5 +1,6 @@
-import fs from "fs"
+import fs from "node:fs"
 import { getStorage , getDownloadURL } from "firebase-admin/storage"
+import { fileTypeFromBuffer } from "file-type";
 
 export class UploadFileService {
 
@@ -8,7 +9,12 @@ export class UploadFileService {
     async upload(base64: string): Promise<string> {
         try {
           const fileBuffer = Buffer.from(base64, 'base64');
-          const fileName = "image.png";
+
+         const fileType = await fileTypeFromBuffer(fileBuffer);
+           
+
+          const fileName = `image.${fileType?.ext}`;
+
           fs.writeFileSync(fileName, fileBuffer);
       
           const bucket = getStorage().bucket("e-commerce-43751.firebasestorage.app");

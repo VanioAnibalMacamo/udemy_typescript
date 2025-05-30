@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CompanyService } from "../services/company.service copy";
-import { Company } from "../models/company.model";
+import { CompanyService } from "../services/company.service copy.js";
+import { Company } from "../models/company.model.js";
 
 export class CompaniesController {
   static async getAll(req: Request, res: Response) {
