@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import { getStorage , getDownloadURL } from "firebase-admin/storage"
 import { fileTypeFromBuffer } from "file-type";
+import { randomUUID } from "node:crypto";
 
 export class UploadFileService {
 
@@ -10,10 +11,8 @@ export class UploadFileService {
         try {
           const fileBuffer = Buffer.from(base64, 'base64');
 
-         const fileType = await fileTypeFromBuffer(fileBuffer);
-           
-
-          const fileName = `image.${fileType?.ext}`;
+          const fileType = await fileTypeFromBuffer(fileBuffer);
+          const fileName = `${randomUUID().toString()}.${fileType?.ext}`;
 
           fs.writeFileSync(fileName, fileBuffer);
       
