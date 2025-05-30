@@ -17,6 +17,7 @@ export class UploadFileService {
             const [file] = await bucket.upload(fileName, {
                 destination: this.path + fileName,
             });
+            fs.unlinkSync(fileName);
             const url = await getDownloadURL(file);
             return url;
         }
