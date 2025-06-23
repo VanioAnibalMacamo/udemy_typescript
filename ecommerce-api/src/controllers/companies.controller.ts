@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CompanyService } from "../services/company.service copy.js";
+import { CompanyService } from "../services/company.service.js";
 import { Company } from "../models/company.model.js";
 
 export class CompaniesController {

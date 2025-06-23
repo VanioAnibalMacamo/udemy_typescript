@@ -1,4 +1,4 @@
-import { CompanyService } from "../services/company.service copy.js";
+import { CompanyService } from "../services/company.service.js";
 export class CompaniesController {
     static async getAll(req, res) {
         res.send(await new CompanyService().getAll());

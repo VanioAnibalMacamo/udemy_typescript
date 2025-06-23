@@ -12,6 +12,7 @@ export class UploadFileService {
           const fileBuffer = Buffer.from(base64, 'base64');
 
           const fileType = await fileTypeFromBuffer(fileBuffer);
+          console.log(fileType);
           const fileName = `${randomUUID().toString()}.${fileType?.ext}`;
 
           fs.writeFileSync(fileName, fileBuffer);
@@ -32,5 +33,4 @@ export class UploadFileService {
           throw err; 
         }
       }
-       
 }
